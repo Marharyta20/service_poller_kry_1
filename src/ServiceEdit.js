@@ -13,7 +13,8 @@ class ServiceEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            item: this.emptyItem
+            item: this.emptyItem,
+            isValid: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,6 +31,12 @@ class ServiceEdit extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
+        if (name === 'url') {
+            const isValid = !value || this.urlPatternValidation(value);
+            this.setState({
+                isValid
+            });
+        }
         let item = {...this.state.item};
         item[name] = value;
         this.setState({item});
@@ -50,6 +57,11 @@ class ServiceEdit extends Component {
         this.props.history.push('/services');
     }
 
+    urlPatternValidation = url => {
+        const regex = new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?');
+        return regex.test(url);
+    };
+
     render() {
         const {item} = this.state;
         const title = <h2>{item.id ? 'Edit Service' : 'Add Service'}</h2>;
@@ -68,9 +80,12 @@ class ServiceEdit extends Component {
                         <Label for="email">URL</Label>
                         <Input type="text" name="url" id="url" value={item.url || ''}
                                onChange={this.handleChange} autoComplete="url"/>
+                        {!this.state.isValid && (
+                            <div style={{color: "#F61C04"}}>URL is not valid.</div>
+                        )}
                     </FormGroup>
                     <FormGroup>
-                        <Button color="primary" type="submit">Save</Button>{' '}
+                        <Button color="primary" type="submit" disabled={!this.state.isValid}>Save</Button>{' '}
                         <Button color="secondary" tag={Link} to="/services">Cancel</Button>
                     </FormGroup>
                 </Form>
