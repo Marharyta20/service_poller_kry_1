@@ -45,7 +45,6 @@ class ServicesList extends Component {
                 <td>{service.creationTime}</td>
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/services/" + service.id}>Edit</Button>
                         <Button size="sm" color="danger" onClick={() => this.remove(service.id)}>Delete</Button>
                     </ButtonGroup>
                 </td>
